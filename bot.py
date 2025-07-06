@@ -1,5 +1,5 @@
-import nextcord
-from nextcord.ext import commands, tasks
+import discord
+from discord.ext import commands, tasks
 from dotenv import load_dotenv
 import os
 from datetime import datetime
