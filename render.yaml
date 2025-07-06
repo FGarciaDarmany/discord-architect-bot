@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: the-architect
+    env: python
+    buildCommand: ""
+    startCommand: python bot.py
+    pythonVersion: 3.11.8
+    envVars:
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: GUILD_ID
+        sync: false
+      - key: PREMIUM_ROLE_ID
+        sync: false
+      - key: FREE_ROLE_ID
+        sync: false
+      - key: ADMIN_ROLE_ID
+        sync: false
