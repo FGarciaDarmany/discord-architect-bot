@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands, tasks
+import nextcord
+from nextcord.ext import commands, tasks
 from dotenv import load_dotenv
 import os
 from datetime import datetime
@@ -15,7 +15,7 @@ GESTION_CANAL_ID = int(os.getenv("GESTION_CANAL_ID"))
 GENERAL_CHANNEL_ID = int(os.getenv("GENERAL_CHANNEL_ID"))
 
 # === Intents ===
-intents = discord.Intents.default()
+intents = nextcord.Intents.default()
 intents.members = True
 intents.message_content = True
 
@@ -62,7 +62,7 @@ async def on_member_join(member):
         try:
             await member.add_roles(free_role)
             print(f"✅ Rol Free asignado a {member.name}")
-        except discord.Forbidden:
+        except nextcord.Forbidden:
             print(f"❌ No tengo permisos para asignar rol Free a {member.name}")
 
     mensaje = (
@@ -79,22 +79,19 @@ async def on_member_join(member):
     try:
         await member.send(mensaje)
         print(f"✅ Bienvenida enviada por DM a {member.name}")
-    except discord.Forbidden:
+    except nextcord.Forbidden:
         print(f"❌ No se pudo enviar DM a {member.name} (Privacidad)")
 
     guardar_usuario(FREE_FILE, member)
 
 # === Verificador de rol admin ===
 def es_admin(ctx):
-    admin_role = discord.utils.get(ctx.guild.roles, id=ADMIN_ROLE_ID)
-    if admin_role and admin_role in ctx.author.roles:
-        return True
-    else:
-        return False
+    admin_role = nextcord.utils.get(ctx.guild.roles, id=ADMIN_ROLE_ID)
+    return admin_role and admin_role in ctx.author.roles
 
 # === Comando: Subir a Premium ===
 @bot.command()
-async def premium(ctx, member: discord.Member):
+async def premium(ctx, member: nextcord.Member):
     if ctx.channel.id != GESTION_CANAL_ID:
         await ctx.send("🚫 Este comando solo se puede usar en el canal de gestión de usuarios.")
         return
@@ -110,13 +107,13 @@ async def premium(ctx, member: discord.Member):
     if premium_role:
         try:
             await member.add_roles(premium_role)
-        except discord.Forbidden:
+        except nextcord.Forbidden:
             await ctx.send("❌ No tengo permisos para asignar el rol Premium.")
             return
     if free_role:
         try:
             await member.remove_roles(free_role)
-        except discord.Forbidden:
+        except nextcord.Forbidden:
             await ctx.send("❌ No tengo permisos para quitar el rol Free.")
             return
 
@@ -131,7 +128,7 @@ async def premium(ctx, member: discord.Member):
     await ctx.send(f"✅ {member.mention} ahora es usuario Premium.")
     try:
         await member.send(mensaje)
-    except discord.Forbidden:
+    except nextcord.Forbidden:
         print(f"❌ No se pudo enviar DM a {member.name}")
 
     guardar_usuario(PREMIUM_FILE, member)
@@ -139,7 +136,7 @@ async def premium(ctx, member: discord.Member):
 
 # === Comando: Bajar a Free ===
 @bot.command()
-async def free(ctx, member: discord.Member):
+async def free(ctx, member: nextcord.Member):
     if ctx.channel.id != GESTION_CANAL_ID:
         await ctx.send("🚫 Este comando solo se puede usar en el canal de gestión de usuarios.")
         return
@@ -156,13 +153,13 @@ async def free(ctx, member: discord.Member):
     if premium_role:
         try:
             await member.remove_roles(premium_role)
-        except discord.Forbidden:
+        except nextcord.Forbidden:
             await ctx.send("❌ No tengo permisos para quitar el rol Premium.")
             return
     if free_role:
         try:
             await member.add_roles(free_role)
-        except discord.Forbidden:
+        except nextcord.Forbidden:
             await ctx.send("❌ No tengo permisos para asignar el rol Free.")
             return
 
@@ -178,7 +175,7 @@ async def free(ctx, member: discord.Member):
 
     try:
         await member.send(mensaje)
-    except discord.Forbidden:
+    except nextcord.Forbidden:
         print(f"❌ No se pudo enviar DM a {member.name}")
 
     guardar_usuario(FREE_FILE, member)
@@ -201,7 +198,7 @@ async def recordatorio_pagos():
                         "⛔ El día 11, si no hay pago, perderás tu acceso Premium.\n"
                         "Prepárate para decidir si quieres seguir en la Matrix o salir de ella. 🐇✨"
                     )
-                except discord.Forbidden:
+                except nextcord.Forbidden:
                     print(f"❌ No se pudo enviar recordatorio a {member.name} (Privacidad)")
 
 # === Ejecutar Bot ===
